@@ -1,0 +1,15 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP NE555DR
+D Single Precision Timer
+K
+F http://www.ti.com/lit/ds/symlink/ne555.pdf
+$ENDCMP
+#
+$CMP SS49E
+D Honeywell Ratiometric Hall Effect Sensor switching current 1.5 mA supply voltage 2.7  6.5 V dc
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/SFDatasheet-1/sf-00023632.pdf
+$ENDCMP
+#
+#End Doc Library

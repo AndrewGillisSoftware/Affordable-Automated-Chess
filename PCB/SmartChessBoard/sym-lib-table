@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name SamacSys_Parts)(type Legacy)(uri C:/Users/Andre/Documents/GitHub/Affordable-Automated-Chess/PCB/KiCad-Libraries/SamacSys_Parts.lib)(options "")(descr ""))
+  (lib (name OH49E)(type Legacy)(uri C:/Users/Andre/Documents/GitHub/Affordable-Automated-Chess/PCB/KiCad-Libraries/OH49E.lib)(options "")(descr ""))
+)

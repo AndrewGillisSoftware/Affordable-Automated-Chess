@@ -1,0 +1,35 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L OH49E:OH49E IC?
+U 1 1 61822EA4
+P 6650 3600
+F 0 "IC?" H 7250 3865 50  0000 C CNN
+F 1 "OH49E" H 7250 3774 50  0000 C CNN
+F 2 "OH3144" H 7700 3700 50  0001 L CNN
+F 3 "" H 7700 3600 50  0001 L CNN
+F 4 "Linear Hall Effect IC" H 7700 3500 50  0001 L CNN "Description"
+F 5 "3.28" H 7700 3400 50  0001 L CNN "Height"
+F 6 "Ouzhuo" H 7700 3300 50  0001 L CNN "Manufacturer_Name"
+F 7 "OH49E" H 7700 3200 50  0001 L CNN "Manufacturer_Part_Number"
+F 8 "" H 7700 3100 50  0001 L CNN "Mouser Part Number"
+F 9 "" H 7700 3000 50  0001 L CNN "Mouser Price/Stock"
+F 10 "" H 7700 2900 50  0001 L CNN "Arrow Part Number"
+F 11 "" H 7700 2800 50  0001 L CNN "Arrow Price/Stock"
+	1    6650 3600
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

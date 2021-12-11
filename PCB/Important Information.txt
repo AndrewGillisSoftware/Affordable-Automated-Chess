@@ -1,0 +1,2 @@
+0.) Get KiCAD and Watch https://www.youtube.com/watch?v=l9b_6WLemmg
+1.) Download the Mouser Library Loader for KiCAD makes part library import faster
