@@ -3,6 +3,8 @@
 
 #define LONG 0
 #define SHORT 1
+#define BLACK 1
+#define WHITE 0
 #define UNKNOWN_POS -1
 
 const int stepsPerRevolution = 2048;
@@ -14,19 +16,28 @@ const int endEffectPin = 3;
 
 const int limitSwitchPins[] = {5, 22};
 
-const long int axisRangeMaxSteps[] = {15000, 117000};
+const long int axisRangeMaxSteps[] = {18000, 11700};
+
+const int axisNormal[] = {1,-1};
+
+Servo myservo; 
 
 int GLOBAL_POS[] = {UNKNOWN_POS, UNKNOWN_POS};
 
 Stepper steppers [] = {Stepper(stepsPerRevolution, StepperPins[LONG][0], StepperPins[LONG][2], StepperPins[LONG][1], StepperPins[LONG][3]),
                        Stepper(stepsPerRevolution, StepperPins[SHORT][0], StepperPins[SHORT][2], StepperPins[SHORT][1], StepperPins[SHORT][3])};
-
 void setup() {
+  myservo.attach(endEffectPin);
+  dropPiece();
+  grabPiece(BLACK);
+  pinMode(limitSwitchPins[LONG], INPUT); 
+  pinMode(limitSwitchPins[SHORT], INPUT); 
   steppers[SHORT].setSpeed(10);
   steppers[LONG].setSpeed(10);
   // put your setup code here, to run once:
   homeAxis(LONG);
   homeAxis(SHORT);
+  goToXY(18000,11700);
 }
 
 void homeAxis(int axis)
@@ -34,26 +45,36 @@ void homeAxis(int axis)
   //While Limit Switch is open
   while(digitalRead(limitSwitchPins[axis]) == HIGH)
   {
-    steppers[axis].step(1);
+    steppers[axis].step(axisNormal[axis]);
     delay(1); 
   }
 
   GLOBAL_POS[axis] = 0;
 }
 
-void moveAxis(int axis, int pos)
-{
-  steppers[axis].step(pos - GLOBAL_POS[axis]);
-  GLOBAL_POS[axis] = pos;
-}
-
 void goToXY(int longAxisPos, int shortAxisPos)
 {
-  moveAxis(LONG, longAxisPos);
-  moveAxis(SHORT, shortAxisPos);
+  steppers[LONG].step(abs(GLOBAL_POS[LONG] - longAxisPos)*(axisNormal[LONG]*-1));
+  steppers[SHORT].step(abs(GLOBAL_POS[SHORT] - shortAxisPos)*(axisNormal[SHORT]*-1));
+}
+
+void grabPiece(int color)
+{
+  if(color == WHITE)
+  {
+    myservo.write(0);
+  }
+  else
+  {
+    myservo.write(180); 
+  }
+}
+
+void dropPiece()
+{
+  myservo.write(90);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  goToXY(100,100);
+
 }
