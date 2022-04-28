@@ -6,21 +6,47 @@
  This example code is in the public domain. 
  http://www.arduino.cc/en/Tutorial/LiquidCrystalHelloWorld  
 */  
-// include the library code:  
-#include <LiquidCrystal.h>  
-// initialize the library by associating any needed LCD interface pin 
-// with the arduino pin number it is connected to 
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2; 
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7); 
- 
-void setup() {    
-  // set up the LCD's number of columns and rows:   
-  lcd.begin(16, 2);   
-  // Print a message to the LCD.    
-  lcd.print("hello, world!"); } 
-void loop() {   
-  // set the cursor to column 0, line 1   
+// include the library code:
+#include <Keypad.h>
+#include <LiquidCrystal.h>
+
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const byte ROWS = 3;
+const byte COLS = 3;
+
+char keys[ROWS][COLS] = {
+  {'1','2','3'},
+  {'4','5','6'},
+  {'7','8','9'}
+};
+
+byte rowPins[ROWS] = {13, 10, 9};
+byte colPins[COLS] = {8, 7, 6};
+
+Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+
+void setup() {
+  Serial.begin(9600);
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.print("Welcome to");
+  lcd.setCursor(0,1);
+  lcd.print("the AACB!");
+  
+}
+void loop() {
+  // set the cursor to column 0, line 1    
   // (note: line 1 is the second row, since counting begins with 0):    
-  lcd.setCursor(0, 1);    
-  // print the number of seconds since reset:   
-  lcd.print(millis() / 1000); }
+  //lcd.setCursor(0, 1);    // print the number of seconds since reset:   
+  //lcd.print(millis() / 1000);
+  char key = keypad.getKey(); 
+  if (key != NO_KEY){
+    if(key == '6'){
+      lcd.clear();
+    }
+    //lcd.print(key);
+  }
+}
