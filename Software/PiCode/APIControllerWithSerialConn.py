@@ -7,6 +7,9 @@ import lichess.auth
 from lichess.format import PGN, SINGLE_PGN
 import ndjson
 import serial
+from smbus import SMBus
+
+toNum = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, '1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6, '8': 7}
 
 token="lip_UkywCM7SXiRTQZXejSLr"
 
@@ -85,8 +88,9 @@ counter = 0
 moveUrl = 'https://lichess.org/api/board/game/' + challengeId + '/move/e2e4'
 
 #Serial Comm with Arudino setup
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-ser.reset_input_buffer()
+addr = 0x8
+bus= SMBus(1)
+
 
 #While game ongoing: gameflow controller
 for line in gameState.iter_lines():
@@ -101,7 +105,7 @@ for line in gameState.iter_lines():
             #get move from arduino
             while True:
                 if ser.in_waiting > 0:
-                    move = ser.readline().decode('utf-8').rstrip()
+                    move = bus.read_i2c_block_data(addr,0,4)
                     break
 
             #send move to lichess
@@ -118,9 +122,12 @@ for line in gameState.iter_lines():
 
             #Get only last move
             lastMove = moves[-4:]+"\n"
-
+            sendData = []
             #send to arduino
-            ser.write(lastMove.encode('utf-8'))
+            for c in lastMove:
+                sendData.append(toNum[c])
+
+            bus.write_i2c_block_data(addr,0x00,sendData)
             print(boardMove.json())
 
         counter+=1
