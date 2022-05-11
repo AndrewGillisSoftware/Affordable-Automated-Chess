@@ -35,9 +35,13 @@ Stepper steppers [] = {Stepper(stepsPerRevolution, StepperPins[LONG][0], Stepper
                        Stepper(stepsPerRevolution, StepperPins[SHORT][0], StepperPins[SHORT][2], StepperPins[SHORT][1], StepperPins[SHORT][3])};
 
 volatile boolean receiveFlag = false;
-char temp[6];
+int temp[4];
 
 int color = WHITE;
+int turns = 0;
+
+int readCounter = 0;
+int readArray[4];
 
 void setup() {
   Serial.begin(9600);
@@ -56,14 +60,12 @@ void setup() {
 }
 
 void receiveEvent(int numBytes){
-  for(int i=0; i<numBytes; i++){
+  //spits out first byte (command byte)
+  Wire.read();
+  
+  //reads in 4 move bytes as integers (might need to change casting)
+  for(int i=0; i<4; i++){
     temp[i] = Wire.read();
-    temp[i+1] = '\0';
-  }
-
-  //first byte is cmd byte, get rid of
-  for(int i=0; i<numBytes; ++i){
-    temp[i] = temp[i+1];
   }
 
   for(int i=0; i<4; i++){
@@ -139,12 +141,27 @@ void loop() {
     if(temp[0] == 14){
       color = BLACK;
     }
+    else if(temp[0] == 13){
+      color = WHITE;
+    }
     else{
       goToSquare(temp[0], temp[1]);
       grabPiece(WHITE);
       goToSquare(temp[2], temp[3]);
       dropPiece(WHITE);
+      turns += 1;
       receiveFlag = false;
+    }
+  }
+  if((color == WHITE && turns%2 == 0) || (color == BLACK && turns%2 == 1)){
+    if(Serial.available() > 0){
+      int incomingByte = Serial.read();
+      readArray[readCounter] = incomingByte;
+      readCounter++;
+      if(readCounter > 3){
+        readCounter = 0;
+        Wire.write(readArray,4)
+      }
     }
   }
 }
