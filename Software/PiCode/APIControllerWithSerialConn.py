@@ -91,6 +91,10 @@ moveUrl = 'https://lichess.org/api/board/game/' + challengeId + '/move/e2e4'
 addr = 0x8
 bus= SMBus(1)
 
+if color == "white":
+    bus.write_i2c_block_data(addr,0x00,[13,13,13,13])
+else:
+    bus.write_i2c_block_data(addr,0x00,[14,14,14,14])
 
 #While game ongoing: gameflow controller
 for line in gameState.iter_lines():
