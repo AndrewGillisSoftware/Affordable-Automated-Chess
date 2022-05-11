@@ -37,6 +37,8 @@ Stepper steppers [] = {Stepper(stepsPerRevolution, StepperPins[LONG][0], Stepper
 volatile boolean receiveFlag = false;
 char temp[6];
 
+int color = WHITE;
+
 void setup() {
   Serial.begin(9600);
   myservo.attach(endEffectPin);
@@ -64,6 +66,9 @@ void receiveEvent(int numBytes){
     temp[i] = temp[i+1];
   }
 
+  for(int i=0; i<4; i++){
+    Serial.println(temp[i]);
+  }
   //Start board movement
   receiveFlag = true;
 }
@@ -131,10 +136,15 @@ void goToSquare(int pX, int pY)
 void loop() {
   //On Receive Move From PI, Move to that location on board
   if(receiveFlag == true){
-    goToSquare(temp[0], temp[1]);
-    grabPiece(WHITE);
-    goToSquare(temp[2], temp[3]);
-    dropPiece(WHITE);
-    receiveFlag = false;
+    if(temp[0] == 14){
+      color = BLACK;
+    }
+    else{
+      goToSquare(temp[0], temp[1]);
+      grabPiece(WHITE);
+      goToSquare(temp[2], temp[3]);
+      dropPiece(WHITE);
+      receiveFlag = false;
+    }
   }
 }
