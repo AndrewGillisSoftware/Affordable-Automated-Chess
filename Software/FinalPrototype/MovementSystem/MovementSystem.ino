@@ -25,6 +25,7 @@ const int squareStartBound[] = {2800,0};
 const int squareEndBound[] = {14500,11700};
 const int squareSeperation = 1462;
 const int speedAxis = 12;
+const int resolution = 1000;
 
 Servo myservo; 
 
@@ -41,7 +42,7 @@ void setup() {
   steppers[LONG].setSpeed(speedAxis);
 
   calibrate();
-
+  
   goToSquare(2, 1);
   grabPiece(WHITE);
   goToSquare(2, 3);
@@ -61,6 +62,30 @@ void setup() {
   goToSquare(3,4);
   grabPiece(BLACK);
   goToSquare(2,3);
+  dropPiece(BLACK);
+  goToSquare(3,0);
+  grabPiece(WHITE);
+  goToSquare(3,1);
+  goToSquare(2,1);
+  goToSquare(2,2);
+  goToSquare(1,2);
+  goToSquare(1,2);
+  goToSquare(0,3);
+  dropPiece(WHITE);
+  goToSquare(1,6);
+  grabPiece(BLACK);
+  goToSquare(1,4);
+  dropPiece(BLACK);
+  goToSquare(7,1);
+  grabPiece(WHITE);
+  goToSquare(7,3);
+  dropPiece(WHITE);
+  goToSquare(1,7);
+  grabPiece(BLACK);
+  goToSquare(1,5);
+  goToSquare(2,5);
+  dropPiece(BLACK);
+  
 }
 
 void homeAxis(int axis)
@@ -89,6 +114,44 @@ void goToXY(int longAxisPos, int shortAxisPos)
   
   GLOBAL_POS[LONG] = longAxisPos;
   GLOBAL_POS[SHORT] = shortAxisPos;
+}
+
+//GCD CODE NOT MY CODE!!!!
+int gcd_while(int a, int b) {
+  if (b > a) {
+    int tmp = b;
+    b = a;
+    a =  tmp;
+  }
+
+  while (b != 0) {
+    int r = a % b;
+    a = b;
+    b =  r;
+  }
+
+  return a;
+}
+
+void fastGoToXY(int longAxisPos, int shortAxisPos)
+{
+  int slopeRise = shortAxisPos - GLOBAL_POS[SHORT];
+  int slopeRun = longAxisPos - GLOBAL_POS[LONG];
+
+  int d = gcd_while(slopeRun, slopeRise);
+  slopeRise /= d;
+  slopeRun /= d;
+
+  while (GLOBAL_POS[LONG] != longAxisPos && GLOBAL_POS[SHORT] != shortAxisPos)
+  {
+    steppers[LONG].step(slopeRun*(axisNormal[LONG]*-1));
+    steppers[SHORT].step(slopeRise*(axisNormal[SHORT]*-1));
+    GLOBAL_POS[LONG] += slopeRun;
+    GLOBAL_POS[SHORT] += slopeRise;
+    Serial.println(GLOBAL_POS[LONG]);
+    Serial.println(GLOBAL_POS[SHORT]);
+    Serial.println("");
+  }
 }
 
 void grabPiece(int color)
@@ -121,6 +184,13 @@ void goToSquare(int pX, int pY)
   int x = squareStartBound[LONG] + (squareSeperation / 2) + (squareSeperation * pX);
   int y = squareStartBound[SHORT] + (squareSeperation / 2) + (squareSeperation * pY);
   goToXY(x,y);
+}
+
+void fastGoToSquare(int pX, int pY)
+{
+  int x = squareStartBound[LONG] + (squareSeperation / 2) + (squareSeperation * pX);
+  int y = squareStartBound[SHORT] + (squareSeperation / 2) + (squareSeperation * pY);
+  fastGoToXY(x,y);
 }
 
 void loop() {
